@@ -11,7 +11,7 @@ const Collection = () => {
   const [filterPrducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
-
+  const [sortType, setSortType] = useState('relevent');
 
   const toogleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -42,10 +42,29 @@ const Collection = () => {
     setFilterProducts(prodctsCopy);
   }
 
+  const sortProduct = ()=>{
+    let filterProductCopy = filterPrducts.slice();
+    switch(sortType){
+      case 'low-high':
+        setFilterProducts(filterProductCopy.sort((a,b)=>(a.price - b.price)));
+        break;
+      case 'high-low':
+        setFilterProducts(filterProductCopy.sort((a,b)=>(b.price - a.price)));
+        break;
+      default:
+        applyFilter();
+        break;
+    }
+  }
+  
   useEffect(() => {
     applyFilter();
   }, [category, subCategory])
 
+  useEffect(()=>{
+
+    sortProduct();
+  },[sortType])
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
 
@@ -99,7 +118,7 @@ const Collection = () => {
         <div className='flex justify-between text-base sm:text-2xl mb-4'>
           <Title text1={'ALL'} text2={'COLLECTIONS'} />
           {/*Product sort */}
-          <select className='border-2 cursor-pointer text-white hover:bg-zinc-800 border-zinc-400 text-sm px-2'>
+          <select onChange={(e)=>setSortType(e.target.value)} className='border-2 cursor-pointer text-white hover:bg-zinc-800 border-zinc-400 text-sm px-2'>
             <option className='bg-zinc-900 cursor-pointer hover:bg-zinc-800 hover:text-white text-zinc-500' value="relevent">Sort by: Relevent</option>
             <option className='bg-zinc-900 cursor-pointer hover:bg-zinc-800 hover:text-white text-zinc-500' value="low-high">Sort by: Low to High</option>
             <option className='bg-zinc-900 cursor-pointer hover:bg-zinc-800 hover:text-white text-zinc-500' value="high-low">Sort by: High to Low</option>
